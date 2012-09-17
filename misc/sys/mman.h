@@ -41,7 +41,7 @@ typedef __mode_t mode_t;
 
 #include <bits/mman.h>
 
-/*DANNY-MODS START*/
+//vipzone
 /* vipzone flags = 3 MSB in a byte */ 
 #ifndef _VIP_ZONE_FLAGS
 #define _VIP_F_READ      0x0010 /*00x1 0000 */
@@ -52,7 +52,7 @@ typedef __mode_t mode_t;
 #define _VIP_MASK        0x00d0 /*1101 0000 in binary*/
 #define _VIP_F_SHIFT     8 /*not sure if needed*/
 #endif
-/*DANNY-MODS END*/
+//end vipzone
 
 /* Return value of `mmap' in case of an error.  */
 #define MAP_FAILED	((void *) -1)
@@ -86,6 +86,7 @@ extern void *mmap64 (void *__addr, size_t __len, int __prot,
 #endif
 
 /* Only one vip_mmap supported for now */
+//vipzone
 extern void *vip_mmap (void *__addr, size_t __len, int __prot,
 		   int __flags, int __fd, __off_t __offset) __THROW;
 		   

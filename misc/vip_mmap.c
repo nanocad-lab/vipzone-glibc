@@ -39,6 +39,7 @@
    for errors (in which case `errno' is set).  A successful `mmap' call
    deallocates any previous mapping for the affected region.  */
 
+//vipzone
 __ptr_t
 __vip_mmap (__ptr_t addr, size_t len, int prot, int flags, 
 	    int fd, off_t offset)
@@ -78,6 +79,7 @@ __vip_mmap (__ptr_t addr, size_t len, int prot, int flags,
 #endif
 }
 
+//vipzone
 stub_warning (vip_mmap)
 #include <stub-tag.h>
-weak_alias (__vip_mmap, vip_mmap)
+weak_alias (__vip_mmap, vip_mmap) //vipzone

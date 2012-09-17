@@ -78,7 +78,7 @@ tee		EXTRA	tee		Ci:iiii	tee
 unshare		EXTRA	unshare		i:i	unshare
 uselib		EXTRA	uselib		i:s	uselib
 vmsplice	EXTRA	vmsplice	Ci:iPii	vmsplice
-vip_mmap		-	vip_mmap		b:aniiii	__vip_mmap		vip_mmap
+vip_mmap		-	vip_mmap		b:aniiii	__vip_mmap		vip_mmap #vipzone
 wait4		-	wait4		i:iWiP	__wait4		wait4
 
 chown		-	chown		i:sii	__libc_chown	__chown chown

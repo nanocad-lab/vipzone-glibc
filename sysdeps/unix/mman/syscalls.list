@@ -9,5 +9,5 @@ mmap		-	mmap		b:aniiii __mmap		mmap
 mprotect	-	mprotect	i:aii	__mprotect	mprotect
 msync		-	msync		Ci:aii	__libc_msync	msync
 munmap		-	munmap		i:ai	__munmap	munmap
-vip_mmap		-	vip_mmap		b:aniiii __vip_mmap		vip_mmap
+vip_mmap		-	vip_mmap		b:aniiii __vip_mmap		vip_mmap #vipzone
 

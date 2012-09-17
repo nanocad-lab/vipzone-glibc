@@ -33,6 +33,7 @@ malloc_hook_ini(size_t sz, const __malloc_ptr_t caller)
   return public_mALLOc(sz);
 }
 
+//vipzone
 static void*
 vip_malloc_hook_ini(size_t sz, size_t vf, const __malloc_ptr_t caller)
 {
@@ -86,7 +87,7 @@ __malloc_check_init()
   }
   using_malloc_checking = 1;
   __malloc_hook = malloc_check;
-  __vip_malloc_hook = vip_malloc_check;
+  __vip_malloc_hook = vip_malloc_check; //vipzone
   __free_hook = free_check;
   __realloc_hook = realloc_check;
   __memalign_hook = memalign_check;
@@ -244,6 +245,7 @@ malloc_check(size_t sz, const void *caller)
   return mem2mem_check(victim, sz);
 }
 
+//vipzone
 static void*
 vip_malloc_check(size_t sz, size_t vf, const void *caller)
 {

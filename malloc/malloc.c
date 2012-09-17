@@ -421,7 +421,7 @@ __malloc_assert (const char *assertion, const char *file, unsigned int line,
 #define public_fREe      dlfree
 #define public_cFREe     dlcfree
 #define public_mALLOc    dlmalloc
-#define public_vIPMALLOc dlvip_malloc
+#define public_vIPMALLOc dlvip_malloc //vipzone
 #define public_mEMALIGn  dlmemalign
 #define public_rEALLOc   dlrealloc
 #define public_vALLOc    dlvalloc
@@ -442,7 +442,7 @@ __malloc_assert (const char *assertion, const char *file, unsigned int line,
 #define public_fREe      __libc_free
 #define public_cFREe     __libc_cfree
 #define public_mALLOc    __libc_malloc
-#define public_vIPMALLOc __libc_vip_malloc
+#define public_vIPMALLOc __libc_vip_malloc //vipzone
 #define public_mEMALIGn  __libc_memalign
 #define public_rEALLOc   __libc_realloc
 #define public_vALLOc    __libc_valloc
@@ -458,7 +458,7 @@ __malloc_assert (const char *assertion, const char *file, unsigned int line,
 #define public_sET_STATe __malloc_set_state
 #define open             __open
 #define mmap             __mmap
-#define vip_mmap         __vip_mmap
+#define vip_mmap         __vip_mmap //vipzone
 #define munmap           __munmap
 #define mremap           __mremap
 #define mprotect         __mprotect
@@ -612,8 +612,8 @@ void *(*__morecore)(ptrdiff_t) = __default_morecore;
 void*  public_mALLOc(size_t);
 libc_hidden_proto (public_mALLOc)
     
-void*  public_vIPMALLOc(size_t, size_t);
-libc_hidden_proto (public_vIPMALLOc)
+void*  public_vIPMALLOc(size_t, size_t); //vipzone
+libc_hidden_proto (public_vIPMALLOc) //vipzone
     
    
 
@@ -1147,7 +1147,7 @@ typedef struct malloc_chunk* mchunkptr;
 /* Internal routines.  */
 
 static void*  _int_malloc(mstate, size_t);
-static void*  _int_vip_malloc(mstate, size_t, size_t);
+static void*  _int_vip_malloc(mstate, size_t, size_t); //vipzone
 static void   _int_free(mstate, mchunkptr, int);
 static void*  _int_realloc(mstate, mchunkptr, INTERNAL_SIZE_T,
 			     INTERNAL_SIZE_T);
@@ -1170,7 +1170,7 @@ static mchunkptr internal_function mremap_chunk(mchunkptr p, size_t new_size);
 #endif
 
 static void*   malloc_check(size_t sz, const void *caller);
-static void*   vip_malloc_check(size_t sz, size_t vf, const void *caller);
+static void*   vip_malloc_check(size_t sz, size_t vf, const void *caller); //vipzone
 static void      free_check(void* mem, const void *caller);
 static void*   realloc_check(void* oldmem, size_t bytes,
 			       const void *caller);
@@ -1178,7 +1178,7 @@ static void*   memalign_check(size_t alignment, size_t bytes,
 				const void *caller);
 /* These routines are never needed in this configuration.  */
 static void*   malloc_atfork(size_t sz, const void *caller);
-static void*   vip_malloc_atfork(size_t sz, size_t vf, const void *caller);
+static void*   vip_malloc_atfork(size_t sz, size_t vf, const void *caller); //vipzone
 static void      free_atfork(void* mem, const void *caller);
 
 
@@ -1229,7 +1229,8 @@ static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
  (dev_zero_fd = open("/dev/zero", O_RDWR), \
   mmap((addr), (size), (prot), (flags), dev_zero_fd, 0)) : \
    mmap((addr), (size), (prot), (flags), dev_zero_fd, 0))
-   
+  
+//vipzone
 #define VIP_MMAP(addr, size, prot, flags) ((dev_zero_fd < 0) ? \
  (dev_zero_fd = open("/dev/zero", O_RDWR), \
   vip_mmap((addr), (size), (prot), (flags), dev_zero_fd, 0)) : \
@@ -1239,7 +1240,8 @@ static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
 
 #define MMAP(addr, size, prot, flags) \
  (mmap((addr), (size), (prot), (flags)|MAP_ANONYMOUS, -1, 0))
- 
+
+//vipzone
 #define VIP_MMAP(addr, size, prot, flags) \
  (mmap((addr), (size), (prot), (flags)|MAP_ANONYMOUS, -1, 0))
  
@@ -1949,7 +1951,7 @@ static void malloc_init_state(mstate av)
 */
 
 static void*  sYSMALLOc(INTERNAL_SIZE_T, mstate);
-static void*  sYSVIPMALLOc(INTERNAL_SIZE_T, INTERNAL_SIZE_T, mstate);
+static void*  sYSVIPMALLOc(INTERNAL_SIZE_T, INTERNAL_SIZE_T, mstate); //vipzone
 static int      sYSTRIm(size_t, mstate);
 static void     malloc_consolidate(mstate);
 
@@ -1967,7 +1969,7 @@ static void     malloc_consolidate(mstate);
 /* Forward declarations.  */
 static void* malloc_hook_ini __MALLOC_P ((size_t sz,
 					    const __malloc_ptr_t caller));
-static void* vip_malloc_hook_ini __VIP_MALLOC_P ((size_t sz,
+static void* vip_malloc_hook_ini __VIP_MALLOC_P ((size_t sz, //vipzone
                                                   size_t vf,
                                           const __malloc_ptr_t caller));
 static void* realloc_hook_ini __MALLOC_P ((void* ptr, size_t sz,
@@ -1976,12 +1978,12 @@ static void* memalign_hook_ini __MALLOC_P ((size_t alignment, size_t sz,
 					      const __malloc_ptr_t caller));
 
 void weak_variable (*__malloc_initialize_hook) (void) = NULL;
-void weak_variable (*__vip_malloc_initialize_hook) (void) = NULL;
+void weak_variable (*__vip_malloc_initialize_hook) (void) = NULL; //vipzone
 void weak_variable (*__free_hook) (__malloc_ptr_t __ptr,
 				   const __malloc_ptr_t) = NULL;
 __malloc_ptr_t weak_variable (*__malloc_hook)
      (size_t __size, const __malloc_ptr_t) = malloc_hook_ini;
-__malloc_ptr_t weak_variable (*__vip_malloc_hook)
+__malloc_ptr_t weak_variable (*__vip_malloc_hook) //vipzone
      (size_t __size, size_t __v_flags, const __malloc_ptr_t) = vip_malloc_hook_ini;
 __malloc_ptr_t weak_variable (*__realloc_hook)
      (__malloc_ptr_t __ptr, size_t __size, const __malloc_ptr_t)
@@ -2797,6 +2799,7 @@ static void* sYSMALLOc(INTERNAL_SIZE_T nb, mstate av)
  be extended or replaced.
  */
 
+//vipzone
 static void* sYSVIPMALLOc(INTERNAL_SIZE_T nb, INTERNAL_SIZE_T vf, mstate av)
 {
     long            size;           /* arg to first MORECORE or mmap call */
@@ -3066,6 +3069,7 @@ public_mALLOc(size_t bytes)
 }
 libc_hidden_def(public_mALLOc)
 
+//vipzone
 void*
 public_vIPMALLOc(size_t bytes, size_t v_flags)
 {
@@ -4081,6 +4085,7 @@ _int_malloc(mstate av, size_t bytes)
  ------------------------------ vip_malloc ------------------------------
  */
 
+//vipzone
 static void*
 _int_vip_malloc(mstate av, size_t bytes, size_t v_flags)
 {
@@ -5449,7 +5454,7 @@ strong_alias (__libc_calloc, __calloc) weak_alias (__libc_calloc, calloc)
 strong_alias (__libc_free, __cfree) weak_alias (__libc_free, cfree)
 strong_alias (__libc_free, __free) strong_alias (__libc_free, free)
 strong_alias (__libc_malloc, __malloc) strong_alias (__libc_malloc, malloc)
-strong_alias (__libc_vip_malloc, __vip_malloc) strong_alias (__libc_vip_malloc, vip_malloc)
+strong_alias (__libc_vip_malloc, __vip_malloc) strong_alias (__libc_vip_malloc, vip_malloc) //vipzone
 strong_alias (__libc_memalign, __memalign)
 weak_alias (__libc_memalign, memalign)
 strong_alias (__libc_realloc, __realloc) strong_alias (__libc_realloc, realloc)

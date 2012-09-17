@@ -47,7 +47,7 @@ libc {
   }
   GLIBC_2.15 {
     # v*
-    vip_mmap;
+    vip_mmap; #vipzone
   }
   GLIBC_PRIVATE {
     __modify_ldt;

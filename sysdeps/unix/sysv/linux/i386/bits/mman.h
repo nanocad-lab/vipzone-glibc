@@ -56,6 +56,7 @@
 #endif
 
 /* vipzone flags */
+//vipzone
 #ifndef _VIP_ZONE_FLAGS
 #define _VIP_F_READ      0x1000
 #define _VIP_F_WRITE     0x2000
@@ -65,6 +66,7 @@
 #define _VIP_MASK        0xf000
 #define _VIP_F_SHIFT     12
 #endif
+//end vipzone
 
 /* These are Linux-specific.  */
 #ifdef __USE_MISC

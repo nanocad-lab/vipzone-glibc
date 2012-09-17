@@ -25,6 +25,7 @@
 
 	.text
 
+/* vipzone */
 ENTRY (__vip_mmap)
 
 	/* Save registers.  */
@@ -80,6 +81,8 @@ L(skip):
 L(pseudo_end):
 	ret
 
+/* vipzone */
 PSEUDO_END (__vip_mmap)
 
+/* vipzone */
 weak_alias (__vip_mmap, vip_mmap)

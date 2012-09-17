@@ -59,6 +59,7 @@ libc {
     malloc_info;
   }
   GLIBC_2.15 {
+	 # vipzone
     __libc_vip_malloc; __vip_malloc_hook; 
     vip_malloc;
   }

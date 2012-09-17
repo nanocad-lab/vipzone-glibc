@@ -469,7 +469,7 @@ extern int lcong48_r (unsigned short int __param[7],
 __BEGIN_NAMESPACE_STD
 /* Allocate SIZE bytes of memory.  */
 extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
-extern void *vip_malloc (size_t __size, size_t _v_flags) __THROW __attribute_malloc__ __wur;
+extern void *vip_malloc (size_t __size, size_t _v_flags) __THROW __attribute_malloc__ __wur; //vipzone
 /* Allocate NMEMB elements of SIZE bytes each, all initialized to 0.  */
 extern void *calloc (size_t __nmemb, size_t __size)
      __THROW __attribute_malloc__ __wur;

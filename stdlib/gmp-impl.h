@@ -86,17 +86,17 @@ MA 02111-1307, USA. */
 
 #if defined (__STDC__)  || defined (__cplusplus)
 void *malloc (size_t);
-void *vip_malloc (size_t, size_t);
+void *vip_malloc (size_t, size_t); //vipzone
 void *realloc (void *, size_t);
 void free (void *);
 
 extern void *	(*_mp_allocate_func) (size_t);
-extern void *	(*_mp_vip_allocate_func) (size_t, size_t);
+extern void *	(*_mp_vip_allocate_func) (size_t, size_t); //vipzone
 extern void *	(*_mp_reallocate_func) (void *, size_t, size_t);
 extern void	(*_mp_free_func) (void *, size_t);
 
 void *_mp_default_allocate (size_t);
-void *_mp_default_vip_allocate (size_t);
+void *_mp_default_vip_allocate (size_t); //vipzone
 void *_mp_default_reallocate (void *, size_t, size_t);
 void _mp_default_free (void *, size_t);
 
@@ -106,17 +106,17 @@ void _mp_default_free (void *, size_t);
 #define signed			/* Empty */
 
 void *malloc ();
-void *vip_malloc ();
+void *vip_malloc (); //vipzone
 void *realloc ();
 void free ();
 
 extern void *	(*_mp_allocate_func) ();
-extern void *	(*_mp_vip_allocate_func) ();
+extern void *	(*_mp_vip_allocate_func) (); //vipzone
 extern void *	(*_mp_reallocate_func) ();
 extern void	(*_mp_free_func) ();
 
 void *_mp_default_allocate ();
-void *_mp_default_vip_allocate ();
+void *_mp_default_vip_allocate (); //vipzone
 void *_mp_default_reallocate ();
 void _mp_default_free ();
 #endif

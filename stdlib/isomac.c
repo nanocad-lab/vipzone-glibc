@@ -165,7 +165,7 @@ static char *macros[] =
   "wcsstr", "wcstod", "wcstok", "wcstol", "wcstombs", "wcstoul",
   "wcsxfrm", "wctob", "wctomb", "wctrans", "wctrans_t", "wctype",
   "wctype_t", "wint_t", "wmemchr", "wmemcmp", "wmemcpy", "wmemmove",
-  "wmemset", "wprintf", "wscanf", "xor", "xor_eq", "vip_malloc"
+  "wmemset", "wprintf", "wscanf", "xor", "xor_eq", "vip_malloc" //vipzone
 };
 
 #define NUMBER_OF_HEADERS              (sizeof header / sizeof *header)

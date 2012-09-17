@@ -147,6 +147,6 @@ libc {
     syncfs;
   }
   GLIBC_2.15 {
-    vip_mmap;
+    vip_mmap; #vipzone
   }
 }

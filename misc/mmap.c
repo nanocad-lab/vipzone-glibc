@@ -34,7 +34,7 @@ __ptr_t
 __mmap (__ptr_t addr, size_t len, int prot, int flags, int fd, off_t offset)
 {
 
-	printf("mmap @ %ld, for %ld ammount, with flags %d,
+	printf("mmap @ %ld, for %ld ammount, with flags %d",
 		addr, len, flags);
 
   __set_errno (ENOSYS);

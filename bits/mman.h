@@ -63,7 +63,6 @@
 #endif
 
 //vipzone
-/*
 #ifndef _VIP_ZONE_FLAGS
 #define _VIP_ZONE_FLAGS
 #define _VIP_F_READ      0x1000
@@ -75,7 +74,7 @@
 #define _VIP_F_SHIFT     12
 #endif
 //end vipzone
-*/
+
 
 /* Advice to `madvise'.  */
 #ifdef __USE_BSD

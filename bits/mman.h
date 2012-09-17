@@ -62,6 +62,21 @@
 # define MAP_INHERIT	 0x0800	/* Region is retained after exec.  */
 #endif
 
+//vipzone
+/*
+#ifndef _VIP_ZONE_FLAGS
+#define _VIP_ZONE_FLAGS
+#define _VIP_F_READ      0x1000
+#define _VIP_F_WRITE     0x2000
+#define _VIP_F_HI_UTIL   0x3000
+#define _VIP_F_MI_UTIL   0x4000
+#define _VIP_F_LO_UTIL   0x5000
+#define _VIP_MASK        0xf000
+#define _VIP_F_SHIFT     12
+#endif
+//end vipzone
+*/
+
 /* Advice to `madvise'.  */
 #ifdef __USE_BSD
 # define MADV_NORMAL	 0	/* No further special treatment.  */

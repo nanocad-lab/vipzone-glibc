@@ -33,7 +33,7 @@
 #ifdef __GNUC__
 
 # define __MALLOC_P(args)	args __THROW
-# define __VIP_MALLOC_P(args)	args __THROW
+# define __VIP_MALLOC_P(args)	args __THROW //vipzone
 /* This macro will be used for functions which might take C++ callback
    functions.  */
 # define __MALLOC_PMT(args)	args
@@ -49,7 +49,7 @@
 #else	/* Not GCC.  */
 
 # define __MALLOC_P(args)	args
-# define __VIP_MALLOC_P(args)	args
+# define __VIP_MALLOC_P(args)	args //vipzone
 # define __MALLOC_PMT(args)	args
 # define __MALLOC_HOOK_VOLATILE
 # define __MALLOC_DEPRECATED __attribute_deprecated__
@@ -61,7 +61,7 @@ __BEGIN_DECLS
 
 /* Allocate SIZE bytes of memory.  */
 extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
-extern void *vip_malloc (size_t __size, size_t __vflags) __THROW __attribute_malloc__ __wur;
+extern void *vip_malloc (size_t __size, size_t __vflags) __THROW __attribute_malloc__ __wur; //vipzone
 
 /* Allocate NMEMB elements of SIZE bytes each, all initialized to 0.  */
 extern void *calloc (size_t __nmemb, size_t __size)
@@ -143,9 +143,8 @@ extern struct mallinfo mallinfo (void) __THROW;
 #define M_ARENA_TEST	    -7
 #define M_ARENA_MAX	    -8
 
-/*DANNY-MODS START*/
 /* vipzone flags = 3 MSB in a byte */ 
-
+//vipzone
 #ifdef _VIP_ZONE_FLAGS
 #undef _VIP_ZONE_FLAGS
 #endif
@@ -159,8 +158,7 @@ extern struct mallinfo mallinfo (void) __THROW;
 #define _VIP_MASK        0x00d0 /*1101 0000 in binary*/
 #define _VIP_F_SHIFT     8 /*not sure if needed*/
 #endif
-/*DANNY-MODS END*/
-
+//end vipzone
 
 /* General SVID/XPG interface to tunable parameters. */
 extern int mallopt (int __param, int __val) __THROW;
@@ -191,7 +189,7 @@ extern int malloc_set_state (void *__ptr) __THROW;
    pointers. */
 extern void (*__MALLOC_HOOK_VOLATILE __malloc_initialize_hook) (void)
      __MALLOC_DEPRECATED;
-extern void (*__MALLOC_HOOK_VOLATILE __vip_malloc_initialize_hook) (void)
+extern void (*__MALLOC_HOOK_VOLATILE __vip_malloc_initialize_hook) (void) //vipzone
 __MALLOC_DEPRECATED;
 /* Hooks for debugging and user-defined versions. */
 extern void (*__MALLOC_HOOK_VOLATILE __free_hook) (void *__ptr,

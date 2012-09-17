@@ -146,6 +146,7 @@ int __malloc_initialized = -1;
 
 static __malloc_ptr_t (*save_malloc_hook) (size_t __size,
 					   __const __malloc_ptr_t);
+//vipzone
 static __malloc_ptr_t (*save_vip_malloc_hook) (size_t __size, 
                                                size_t __vflags,
                                            __const __malloc_ptr_t);
@@ -192,6 +193,7 @@ malloc_atfork(size_t sz, const void *caller)
   }
 }
 
+//vipzone
 static void*
 vip_malloc_atfork(size_t sz, size_t vf, const void *caller)
 {
@@ -278,10 +280,10 @@ ptmalloc_lock_all (void)
   }
   save_malloc_hook = __malloc_hook;
   save_free_hook = __free_hook;
-  save_vip_malloc_hook = __vip_malloc_hook;
+  save_vip_malloc_hook = __vip_malloc_hook; //vipzone
   __malloc_hook = malloc_atfork;
   __free_hook = free_atfork;
-  __vip_malloc_hook = vip_malloc_atfork;
+  __vip_malloc_hook = vip_malloc_atfork; //vipzone
   /* Only the current thread may perform malloc/free calls now. */
   tsd_getspecific(arena_key, save_arena);
   tsd_setspecific(arena_key, ATFORK_ARENA_PTR);
@@ -301,7 +303,7 @@ ptmalloc_unlock_all (void)
   tsd_setspecific(arena_key, save_arena);
   __malloc_hook = save_malloc_hook;
   __free_hook = save_free_hook;
-  __vip_malloc_hook = save_vip_malloc_hook;
+  __vip_malloc_hook = save_vip_malloc_hook; //vipzone
   for(ar_ptr = &main_arena;;) {
     (void)mutex_unlock(&ar_ptr->mutex);
     ar_ptr = ar_ptr->next;
@@ -494,9 +496,9 @@ ptmalloc_init (void)
   if (hook != NULL)
     (*hook)();
     
-   void (*vip_hook) (void) = force_reg (__vip_malloc_initialize_hook);
-   if (vip_hook != NULL)
-     (*vip_hook)();
+   void (*vip_hook) (void) = force_reg (__vip_malloc_initialize_hook); //vipzone
+   if (vip_hook != NULL) //vipzone
+     (*vip_hook)(); //vipzone
     
   __malloc_initialized = 1;
     

@@ -16,7 +16,7 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-/*
+
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <errno.h>
@@ -25,11 +25,14 @@
 #include <sys/syscall.h>
 
 #define vip_mmap_NR 312
-*/
+
+/*
 #include <errno.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <stdio.h>
+*/
+
 /* Map addresses starting near ADDR and extending for LEN bytes.  From
    OFFSET into the file FD describes according to PROT and FLAGS.  If ADDR
    is nonzero, it is the desired mapping address.  If the MAP_FIXED bit is
@@ -44,31 +47,34 @@ __ptr_t
 __vip_mmap (__ptr_t addr, size_t len, int prot, int flags, 
 	    int fd, off_t offset)
 {
-  //__set_errno (ENOSYS);
-   printf("vip_mmap @ %lu, for %lu ammount, with flags %lu\n", 
-	 (unsigned long)addr, (unsigned long)len, (unsigned long)flags);
-#if 0
-  __ptr_t c;
+  //__ptr_t c;
   size_t i;
+
   printf("vip_mmap @ %lu, for %lu ammount, with flags %lu\n", 
 	 (unsigned long)addr, (unsigned long)len, (unsigned long)flags);
   
-  unsigned long * ptr = (unsigned long * )(syscall(vip_mmap_NR, addr, len, prot, flags, fd, offset));
-  
-  for(i=0; i<len/4; i++)
+  unsigned long *ptr = (unsigned long * )(syscall(vip_mmap_NR, addr, len, prot, flags, fd, offset)); //hangs here
+ 
+  if (ptr == NULL) {
+	  __set_errno(ENOMEM);
+	  return MAP_FAILED;
+  }
+
+  for(i = 0; i < len/4; i++)
   {
      *(ptr+i) = i;
-      if(i%16==0)
-	printf("c(%lu)= %lu\n", i, *(ptr+i));
+      if(i % 16==0)
+			printf("c(%lu)= %lu\n", i, *(ptr+i));
   }
   
-  return (void *)ptr;
+  return (void *) ptr;
 #endif
-  
-  __set_errno (ENOSYS);
+
+/*__set_errno (ENOSYS);
   return MAP_FAILED;
-//#endif
-#if 0  
+  */
+
+/*
   printf("vip_mmap @ %lu, for %lu ammount, with flags %lu\n", 
 	 (unsigned long)addr, (unsigned long)len, (unsigned long)v_flags);
   unsigned long c = syscall(vip_mmap_NR, addr, len, prot, flags, fd, offset, v_flags);
@@ -76,7 +82,7 @@ __vip_mmap (__ptr_t addr, size_t len, int prot, int flags,
 	   (unsigned long)(addr+len));
   //_set_errno (ENOSYS);
   return MAP_FAILED;
-#endif
+*/
 }
 
 //vipzone

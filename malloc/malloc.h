@@ -61,7 +61,7 @@ __BEGIN_DECLS
 
 /* Allocate SIZE bytes of memory.  */
 extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
-extern void *vip_malloc (size_t __size, size_t __vflags) __THROW __attribute_malloc__ __wur; //vipzone
+extern void *vip_malloc (size_t __size, size_t __vip_flags) __THROW __attribute_malloc__ __wur; //vipzone
 
 /* Allocate NMEMB elements of SIZE bytes each, all initialized to 0.  */
 extern void *calloc (size_t __nmemb, size_t __size)
@@ -142,23 +142,6 @@ extern struct mallinfo mallinfo (void) __THROW;
 #define M_PERTURB	    -6
 #define M_ARENA_TEST	    -7
 #define M_ARENA_MAX	    -8
-
-/* vipzone flags = 3 MSB in a byte */ 
-//vipzone
-#ifdef _VIP_ZONE_FLAGS
-#undef _VIP_ZONE_FLAGS
-#endif
-
-#ifndef _VIP_ZONE_FLAGS
-#define _VIP_F_READ      0x0010 /*00x1 0000 */
-#define _VIP_F_WRITE     0x0040 /*01x0 0000 */
-#define _VIP_F_HI_UTIL   0x0050 /*01x1 0000 */
-#define _VIP_F_MI_UTIL   0x0080 /*10x0 0000 */
-#define _VIP_F_LO_UTIL   0x0090 /*10x1 0000 */
-#define _VIP_MASK        0x00d0 /*1101 0000 in binary*/
-#define _VIP_F_SHIFT     8 /*not sure if needed*/
-#endif
-//end vipzone
 
 /* General SVID/XPG interface to tunable parameters. */
 extern int mallopt (int __param, int __val) __THROW;

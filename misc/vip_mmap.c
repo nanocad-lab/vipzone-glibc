@@ -16,7 +16,7 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
    02111-1307 USA.  */
 
-/*
+
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <errno.h>
@@ -25,12 +25,12 @@
 #include <sys/syscall.h>
 
 #define vip_mmap_NR 312
-*/
+/*
 
 #include <errno.h>
 #include <sys/mman.h>
 #include <sys/types.h>
-#include <stdio.h>
+#include <stdio.h>*/
 
 
 /* Map addresses starting near ADDR and extending for LEN bytes.  From
@@ -44,22 +44,24 @@
 
 //vipzone
 __ptr_t
-__vip_mmap (__ptr_t addr, size_t len, int prot, int flags, 
+__vip_mmap (__ptr_t addr, size_t len, int prot, int flags, int vip_flags,
 	    int fd, off_t offset)
 {
   //__ptr_t c;
  // size_t i;
 
-  printf("vip_mmap @ %lu, for %lu ammount, with flags %lu\n", 
-	 (unsigned long)addr, (unsigned long)len, (unsigned long)flags);
- /* 
-  unsigned long *ptr = (unsigned long * )(syscall(vip_mmap_NR, addr, len, prot, flags, fd, offset));
+  //printf("vip_mmap @ %lu, for %lu ammount, with flags %lu\n", 
+	// (unsigned long)addr, (unsigned long)len, (unsigned long)flags);
+  
+  unsigned long *ptr = (unsigned long *)(syscall(vip_mmap_NR, addr, len, prot, flags, vip_flags, fd, offset));
  
   if (ptr == NULL) {
 	  __set_errno(ENOMEM);
 	  return MAP_FAILED;
   }
-
+  else
+	  return ptr;
+/*
   for(i = 0; i < len/4; i++)
   {
      *(ptr+i) = i;
@@ -69,8 +71,8 @@ __vip_mmap (__ptr_t addr, size_t len, int prot, int flags,
   
   return (void *) ptr;
 */
-  __set_errno (ENOSYS);
-  return MAP_FAILED;
+ /* __set_errno (ENOSYS);
+  return MAP_FAILED; */
   
 
 /*

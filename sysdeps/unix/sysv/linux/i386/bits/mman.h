@@ -55,19 +55,6 @@
 # define MAP_ANON	MAP_ANONYMOUS
 #endif
 
-/* vipzone flags */
-//vipzone
-#ifndef _VIP_ZONE_FLAGS
-#define _VIP_F_READ      0x1000
-#define _VIP_F_WRITE     0x2000
-#define _VIP_F_HI_UTIL   0x3000
-#define _VIP_F_MI_UTIL   0x4000
-#define _VIP_F_LO_UTIL   0x5000
-#define _VIP_MASK        0xf000
-#define _VIP_F_SHIFT     12
-#endif
-//end vipzone
-
 /* These are Linux-specific.  */
 #ifdef __USE_MISC
 # define MAP_GROWSDOWN	0x00100		/* Stack-like segment.  */

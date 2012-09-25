@@ -25,7 +25,7 @@
 
 	.text
 
-/* vipzone */
+/* vipzone -- note this is OUTDATED and probably incorrect. Currently using misc/vip_mmap.c */
 ENTRY (__vip_mmap)
 
 	/* Save registers.  */

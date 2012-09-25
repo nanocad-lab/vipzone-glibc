@@ -248,6 +248,9 @@ extern "C" {
 /* For various dynamic linking things.  */
 #include <dlfcn.h>
 
+#include <sys/mman.h> //vipzone
+#include <bits/mman.h> //vipzone
+
 
 /*
   Debugging:
@@ -1231,10 +1234,10 @@ static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
    mmap((addr), (size), (prot), (flags), dev_zero_fd, 0))
   
 //vipzone
-#define VIP_MMAP(addr, size, prot, flags) ((dev_zero_fd < 0) ? \
+#define VIP_MMAP(addr, size, prot, flags, vip_flags) ((dev_zero_fd < 0) ? \
  (dev_zero_fd = open("/dev/zero", O_RDWR), \
-  vip_mmap((addr), (size), (prot), (flags), dev_zero_fd, 0)) : \
-   vip_mmap((addr), (size), (prot), (flags), dev_zero_fd, 0))
+  vip_mmap((addr), (size), (prot), (flags), (vip_flags), dev_zero_fd, 0)) : \
+   vip_mmap((addr), (size), (prot), (flags), (vip_flags), dev_zero_fd, 0))
 
 #else
 
@@ -1242,8 +1245,8 @@ static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
  (mmap((addr), (size), (prot), (flags)|MAP_ANONYMOUS, -1, 0))
 
 //vipzone
-#define VIP_MMAP(addr, size, prot, flags) \
- (mmap((addr), (size), (prot), (flags)|MAP_ANONYMOUS, -1, 0))
+#define VIP_MMAP(addr, size, prot, flags, vip_flags) \
+ (vip_mmap((addr), (size), (prot), (flags)|MAP_ANONYMOUS, (vip_flags), -1, 0))
  
 #endif
 
@@ -1984,7 +1987,7 @@ void weak_variable (*__free_hook) (__malloc_ptr_t __ptr,
 __malloc_ptr_t weak_variable (*__malloc_hook)
      (size_t __size, const __malloc_ptr_t) = malloc_hook_ini;
 __malloc_ptr_t weak_variable (*__vip_malloc_hook) //vipzone
-     (size_t __size, size_t __v_flags, const __malloc_ptr_t) = vip_malloc_hook_ini;
+     (size_t __size, size_t __vip_flags, const __malloc_ptr_t) = vip_malloc_hook_ini;
 __malloc_ptr_t weak_variable (*__realloc_hook)
      (__malloc_ptr_t __ptr, size_t __size, const __malloc_ptr_t)
      = realloc_hook_ini;
@@ -2836,8 +2839,9 @@ static void* sYSVIPMALLOc(INTERNAL_SIZE_T nb, INTERNAL_SIZE_T vf, mstate av)
         /* Don't try if size wraps around 0 */
         if ((unsigned long)(size) > (unsigned long)(nb)) {
             
-	    long unsigned flags = MAP_PRIVATE | _VIP_F_READ;// | vf; (MAP_PRIVATE | _VIP_F_READ)|MAP_ANONYMOUS
-            mm = (char*)(VIP_MMAP(0, size, PROT_READ|PROT_WRITE, flags));
+	    long unsigned flags = MAP_PRIVATE | MAP_ANONYMOUS; // | vf; (MAP_PRIVATE | _VIP_F_READ)|MAP_ANONYMOUS
+		 long unsigned vip_flags = _VIP_TYP_READ;
+            mm = (char*)(VIP_MMAP(0, size, PROT_READ|PROT_WRITE, flags, vip_flags));
             
             if (mm != MAP_FAILED) {
                 
@@ -3071,21 +3075,21 @@ libc_hidden_def(public_mALLOc)
 
 //vipzone
 void*
-public_vIPMALLOc(size_t bytes, size_t v_flags)
+public_vIPMALLOc(size_t bytes, size_t vip_flags)
 {
     mstate ar_ptr;
     void *victim;
     
     printf("public_vIPMALLOc: req[%lu,%lu] \n",
-           (long unsigned int)bytes,(long unsigned int)v_flags);
+           (long unsigned int)bytes,(long unsigned int)vip_flags);
     
     __malloc_ptr_t (*hook) (size_t, size_t, __const __malloc_ptr_t)
     = force_reg (__vip_malloc_hook);
     if (__builtin_expect (hook != NULL, 0))
-        return (*hook)(bytes, v_flags, RETURN_ADDRESS (0));
+        return (*hook)(bytes, vip_flags, RETURN_ADDRESS (0));
     
     printf("public_vIPMALLOc: calling arena_lookup(%lu,%lu) \n",
-           (long unsigned int)bytes,(long unsigned int)v_flags);
+           (long unsigned int)bytes,(long unsigned int)vip_flags);
     
     arena_lookup(ar_ptr);
     
@@ -3094,9 +3098,9 @@ public_vIPMALLOc(size_t bytes, size_t v_flags)
         return 0;
     
     printf("public_vIPMALLOc: calling _int_vip_malloc(%lu,%lu) \n",
-           (long unsigned int)bytes,(long unsigned int)v_flags);
+           (long unsigned int)bytes,(long unsigned int)vip_flags);
     
-    victim = _int_vip_malloc(ar_ptr, bytes, v_flags);
+    victim = _int_vip_malloc(ar_ptr, bytes, vip_flags);
     if(!victim) {
         /*TODO: This might not be needed*/
         /* Maybe the failure is due to running out of mmapped areas. */
@@ -3104,14 +3108,14 @@ public_vIPMALLOc(size_t bytes, size_t v_flags)
             (void)mutex_unlock(&ar_ptr->mutex);
             ar_ptr = &main_arena;
             (void)mutex_lock(&ar_ptr->mutex);
-            victim = _int_vip_malloc(ar_ptr, bytes, v_flags);
+            victim = _int_vip_malloc(ar_ptr, bytes, vip_flags);
             (void)mutex_unlock(&ar_ptr->mutex);
         } else {
             /* ... or sbrk() has failed and there is still a chance to mmap() */
             ar_ptr = arena_get2(ar_ptr->next ? ar_ptr : 0, bytes);
             (void)mutex_unlock(&main_arena.mutex);
             if(ar_ptr) {
-                victim = _int_vip_malloc(ar_ptr, bytes, v_flags);
+                victim = _int_vip_malloc(ar_ptr, bytes, vip_flags);
                 (void)mutex_unlock(&ar_ptr->mutex);
             }
         }
@@ -4087,7 +4091,7 @@ _int_malloc(mstate av, size_t bytes)
 
 //vipzone
 static void*
-_int_vip_malloc(mstate av, size_t bytes, size_t v_flags)
+_int_vip_malloc(mstate av, size_t bytes, size_t vip_flags)
 {
     INTERNAL_SIZE_T nb;               /* normalized request size */
 
@@ -4102,10 +4106,10 @@ _int_vip_malloc(mstate av, size_t bytes, size_t v_flags)
      */
     
     printf("_int_vip_malloc: req[%lu,%lu] \n",
-           (long unsigned int)nb,(long unsigned int)v_flags);
+           (long unsigned int)nb,(long unsigned int)vip_flags);
     
     checked_request2size(bytes, nb);
-    void *p = sYSVIPMALLOc(nb, v_flags, av);
+    void *p = sYSVIPMALLOc(nb, vip_flags, av);
     if (p != NULL && __builtin_expect (perturb_byte, 0))
         alloc_perturb (p, bytes);
     return p;

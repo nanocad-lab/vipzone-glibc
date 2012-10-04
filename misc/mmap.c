@@ -34,8 +34,8 @@ __ptr_t
 __mmap (__ptr_t addr, size_t len, int prot, int flags, int fd, off_t offset)
 {
 
-	printf("mmap @ %ld, for %ld ammount, with flags %d",
-		addr, len, flags);
+	printf("mmap @ %ld, for %ld amount, with prot %d, flags %d, fd %d, offset %lu", //vipzone
+		addr, len, prot, flags, fd, offset);
 
   __set_errno (ENOSYS);
   return MAP_FAILED;

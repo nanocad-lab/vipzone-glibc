@@ -1234,10 +1234,10 @@ static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
    mmap((addr), (size), (prot), (flags), dev_zero_fd, 0))
   
 //vipzone
-#define VIP_MMAP(addr, size, prot, flags, vip_flags) ((dev_zero_fd < 0) ? \
+#define VIP_MMAP(addr, size, prot, flags) ((dev_zero_fd < 0) ? \
  (dev_zero_fd = open("/dev/zero", O_RDWR), \
-  vip_mmap((addr), (size), (prot), (flags), (vip_flags), dev_zero_fd, 0)) : \
-   vip_mmap((addr), (size), (prot), (flags), (vip_flags), dev_zero_fd, 0))
+  vip_mmap((addr), (size), (prot), (flags), dev_zero_fd, 0)) : \
+   vip_mmap((addr), (size), (prot), (flags), dev_zero_fd, 0))
 
 #else
 
@@ -1245,8 +1245,8 @@ static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
  (mmap((addr), (size), (prot), (flags)|MAP_ANONYMOUS, -1, 0))
 
 //vipzone
-#define VIP_MMAP(addr, size, prot, flags, vip_flags) \
- (vip_mmap((addr), (size), (prot), (flags)|MAP_ANONYMOUS, (vip_flags), -1, 0))
+#define VIP_MMAP(addr, size, prot, flags) \
+ (vip_mmap((addr), (size), (prot), (flags)|MAP_ANONYMOUS, -1, 0))
  
 #endif
 
@@ -2840,8 +2840,8 @@ static void* sYSVIPMALLOc(INTERNAL_SIZE_T nb, INTERNAL_SIZE_T vf, mstate av)
         if ((unsigned long)(size) > (unsigned long)(nb)) {
             
 	    long unsigned flags = MAP_PRIVATE | MAP_ANONYMOUS; // | vf; (MAP_PRIVATE | _VIP_F_READ)|MAP_ANONYMOUS
-		 long unsigned vip_flags = _VIP_TYP_READ;
-            mm = (char*)(VIP_MMAP(0, size, PROT_READ|PROT_WRITE, flags, vip_flags));
+		 long unsigned vip_flags = _VIP_TYP_READ | _VIP_UTIL_LO;
+            mm = (char*)(VIP_MMAP(0, size, PROT_READ|PROT_WRITE, (flags | vip_flags)));
             
             if (mm != MAP_FAILED) {
                 

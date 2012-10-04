@@ -44,49 +44,87 @@
 
 //vipzone
 __ptr_t
-__vip_mmap (__ptr_t addr, size_t len, int prot, int flags, int vip_flags,
+__vip_mmap (__ptr_t addr, size_t len, int prot, int flags,
 	    int fd, off_t offset)
 {
-  //__ptr_t c;
- // size_t i;
-
-  //printf("vip_mmap @ %lu, for %lu ammount, with flags %lu\n", 
-	// (unsigned long)addr, (unsigned long)len, (unsigned long)flags);
-  
-  unsigned long *ptr = (unsigned long *)(syscall(vip_mmap_NR, addr, len, prot, flags, vip_flags, fd, offset));
- 
-  if (ptr == NULL) {
-	  __set_errno(ENOMEM);
-	  return MAP_FAILED;
-  }
-  else
-	  return ptr;
-/*
-  for(i = 0; i < len/4; i++)
-  {
-     *(ptr+i) = i;
-      if(i % 16==0)
-			printf("c(%lu)= %lu\n", i, *(ptr+i));
-  }
-  
-  return (void *) ptr;
-*/
- /* __set_errno (ENOSYS);
-  return MAP_FAILED; */
-  
-
-/*
-  printf("vip_mmap @ %lu, for %lu ammount, with flags %lu\n", 
-	 (unsigned long)addr, (unsigned long)len, (unsigned long)v_flags);
-  unsigned long c = syscall(vip_mmap_NR, addr, len, prot, flags, fd, offset, v_flags);
-  printf("System call returned %lu == %lu?\n", c, 
-	   (unsigned long)(addr+len));
-  //_set_errno (ENOSYS);
-  return MAP_FAILED;
-*/
+  return (unsigned long *)(syscall(vip_mmap_NR, addr, len, prot, flags, fd, offset)); //vip_flags are embedded in flags
 }
 
 //vipzone
 stub_warning (vip_mmap)
 #include <stub-tag.h>
 weak_alias (__vip_mmap, vip_mmap) //vipzone
+
+#if 0
+#include <sysdep.h>
+
+#include <kernel-features.h>
+
+#define EINVAL	22
+
+	.text
+
+/* vipzone */
+ENTRY (__vip_mmap)
+
+	/* Save registers.  */
+	pushl %ebp
+	cfi_adjust_cfa_offset (4)
+	pushl %ebx
+	cfi_adjust_cfa_offset (4)
+	pushl %esi
+	cfi_adjust_cfa_offset (4)
+	pushl %edi
+	cfi_adjust_cfa_offset (4)
+
+	movl 20(%esp), %ebx
+	cfi_rel_offset (ebx, 8)
+	movl 24(%esp), %ecx
+	movl 28(%esp), %edx
+	movl 32(%esp), %esi
+	cfi_rel_offset (esi, 4)
+	movl 36(%esp), %edi
+	cfi_rel_offset (edi, 0)
+	movl 40(%esp), %ebp
+	cfi_rel_offset (ebp, 12)
+	testl $0xfff, %ebp
+	movl $-EINVAL, %eax
+	jne L(skip)
+	shrl $12, %ebp			/* vip_mmap takes the offset in pages.  */
+
+	movl $SYS_ify(vip_mmap), %eax	/* System call number in %eax.  */
+
+	/* Do the system call trap.  */
+	ENTER_KERNEL
+
+L(skip):
+	/* Restore registers.  */
+	popl %edi
+	cfi_adjust_cfa_offset (-4)
+	cfi_restore (edi)
+	popl %esi
+	cfi_adjust_cfa_offset (-4)
+	cfi_restore (esi)
+	popl %ebx
+	cfi_adjust_cfa_offset (-4)
+	cfi_restore (ebx)
+	popl %ebp
+	cfi_adjust_cfa_offset (-4)
+	cfi_restore (ebp)
+
+
+	/* If 0 > %eax > -4096 there was an error.  */
+	cmpl $-4096, %eax
+	ja SYSCALL_ERROR_LABEL
+
+	/* Successful; return the syscall's value.  */
+L(pseudo_end):
+	ret
+
+/* vipzone */
+PSEUDO_END (__vip_mmap)
+
+/* vipzone */
+weak_alias (__vip_mmap, vip_mmap)
+
+#endif

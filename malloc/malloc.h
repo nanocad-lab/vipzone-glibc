@@ -143,6 +143,21 @@ extern struct mallinfo mallinfo (void) __THROW;
 #define M_ARENA_TEST	    -7
 #define M_ARENA_MAX	    -8
 
+
+//vipzone
+#ifdef _VIPZONE_FLAGS
+	#error _VIPZONE_FLAGS was already defined somewhere! It should only be in malloc/malloc.h.
+#else
+	#define _VIPZONE_FLAGS
+	#define _VIP_TYP_READ 0x0000
+	#define _VIP_TYP_WRITE 0x0010
+	#define _VIP_UTIL_LO 0x0000
+	#define _VIP_UTIL_HI 0x0020
+	#define NR_vip_mmap 312
+#endif
+
+#include <sys/mman.h>
+
 /* General SVID/XPG interface to tunable parameters. */
 extern int mallopt (int __param, int __val) __THROW;
 

@@ -41,23 +41,6 @@ typedef __mode_t mode_t;
 
 #include <bits/mman.h>
 
-//vipzone -- also defined in bits/mman.h
-#ifndef _VIP_ZONE_FLAGS
-#define _VIP_ZONE_FLAGS
-
-//UPDATE THESE
-/*#define _VIP_TYP_READ         0x0000 // xxxx xxx0 -- default
-#define _VIP_TYP_WRITE        0x0001 // xxxx xxx1
-#define _VIP_TYP_MASK         0x0001 // 0000 0001 -- MASK
-
-#define _VIP_UTIL_LO          0x0000 // xxx0 xxxx -- default
-#define _VIP_UTIL_HI          0x0010 // xxx1 xxxx
-#define _VIP_UTIL_MASK        0x0010 // 0001 0000 -- MASK
-*/
-//Macros for extracting vipzone flags
-#endif
-
-
 /* Return value of `mmap' in case of an error.  */
 #define MAP_FAILED	((void *) -1)
 

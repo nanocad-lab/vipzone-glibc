@@ -257,7 +257,7 @@ vip_malloc_check(size_t sz, size_t vf, const void *caller)
     }
     
     (void)mutex_lock(&main_arena.mutex);
-    victim = (top_check() >= 0) ? _int_vip_malloc(&main_arena, sz+1, vf) : NULL;
+    victim = (top_check() >= 0) ? _int_vip_malloc(sz+1, vf) : NULL;
     (void)mutex_unlock(&main_arena.mutex);
     return mem2mem_check(victim, sz);
 }

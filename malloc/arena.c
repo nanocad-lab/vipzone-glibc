@@ -204,11 +204,11 @@ vip_malloc_atfork(size_t sz, size_t vf, const void *caller)
     if(vptr == ATFORK_ARENA_PTR) {
         /* We are the only thread that may allocate at all.  */
         if(save_vip_malloc_hook != vip_malloc_check) {
-            return _int_vip_malloc(&main_arena, sz, vf);
+            return _int_vip_malloc(sz, vf);
         } else {
             if(top_check()<0)
                 return 0;
-            victim = _int_vip_malloc(&main_arena, sz+1, vf);
+            victim = _int_vip_malloc(sz+1, vf);
             return mem2mem_check(victim, sz);
         }
     } else {
